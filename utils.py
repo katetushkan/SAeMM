@@ -10,7 +10,6 @@ from constants import HIST_INTERVALS, LEMER, LEMER_N
 class ParamErrors(Enum):
     NOT_PRIME = 'This number should be prime. '
     NOT_LESS = 'This number should be less then 2^n - 1. '
-    NOT_ENOUGH_ONES = 'This number should has more 1 in binary form. '
 
 
 def create_scheme(sequence, intervals):
