@@ -1,16 +1,15 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
 
 # Press the green button in the gutter to run the script.
+from SimulationStatistic import SimulationStatistic
+from SimulatorV21 import SimulatorV21
+from StandartGenerator import StandartGenerator
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    generator = StandartGenerator()
+    simulator = SimulatorV21(generator)
+    statistics = SimulatorV21.simulation_statistics(simulator, 100000, 0.4, 0.5)
+
+
+
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

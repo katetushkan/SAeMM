@@ -1,0 +1,17 @@
+class LemerGenerator:
+
+    def __init__(self, a: int, r0: int, m: int):
+        self.a = a
+        self.m = m
+        self.r0 = r0
+        self.current = r0
+
+    @property
+    def next(self):
+        self.current = ((self.a % self.m) * (self.current % self.m)) % self.m
+        return self.current / self.m
+
+    def reset(self):
+        self.current = self.r0
+
+
