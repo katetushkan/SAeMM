@@ -25,21 +25,28 @@ class SimulatorV21:
             cls.change_simulator_state(generator_type, simulator, statistic, pi1, pi2)
             cls.update_statistics(simulator, statistic)
 
-        statistic.A = statistic.A / tact_count
-        statistic.Loch = statistic.Loch / tact_count
-        statistic.K1 = statistic.K1 / tact_count
+        statistic.A /= tact_count
+        statistic.Loch /= tact_count
+        statistic.K1 /= tact_count
         statistic.K2 /= tact_count
+        statistic.Pbl /= tact_count
+        statistic.Lc /= tact_count
 
         return statistic
 
     @staticmethod
     def update_statistics(simulator: SimulatorState, statistics):
-        if simulator.channel1 != ChannelState.EMPTY:
+        if simulator.channel1.state == ChannelState.BUSY.value:
             statistics.K1 += 1
-        if simulator.channel2 != ChannelState.EMPTY:
+            statistics.Lc += 1
+        if simulator.channel2.state != ChannelState.EMPTY.value:
             statistics.K2 += 1
+            statistics.Lc += 1
         if simulator.queue != 0:
             statistics.Loch += simulator.queue
+            statistics.Lc += 1
+        if simulator.source.state == SourceState.BLOCKED.value or simulator.channel1.state == ChannelState.BLOCKED.value:
+            statistics.Pbl += 1
 
         state = simulator.source.state + simulator.channel1.state + str(simulator.queue) + simulator.channel2.state
         statistics.SimulationStates[state] = statistics.SimulationStates[state] + 1
@@ -71,7 +78,7 @@ class SimulatorV21:
                 simulator.queue += 1
                 simulator.channel1.state = ChannelState.EMPTY
 
-        if simulator.source.state == SourceState.LAST_TIC.value or simulator.source.state == SourceState.BLOCKED.value:
+        if simulator.source.state == SourceState.LAST_TIC.value:
             if simulator.channel1.state == ChannelState.EMPTY.value:
                 simulator.channel1.state = ChannelState.BUSY
                 simulator.source.state = SourceState.FIRST_TIC
@@ -79,3 +86,6 @@ class SimulatorV21:
                 simulator.source.state = SourceState.BLOCKED
         elif simulator.source.state == SourceState.FIRST_TIC.value:
             simulator.source.state = SourceState.LAST_TIC
+        elif simulator.source.state == SourceState.BLOCKED.value:
+            if simulator.channel1.state == ChannelState.EMPTY.value:
+                simulator.source.state = SourceState.FIRST_TIC

@@ -7,123 +7,34 @@ class SimulationStatistic:
 
     SimulationStates = {
 
-        #
-        # SimulatorState(Source(SourceState.FIRST_TIC),
-        #                Channel(ChannelState.EMPTY),
-        #                0,
-        #                Channel(ChannelState.EMPTY))
         '2000': 0,
-
-        # 1000
-        # SimulatorState(Source(SourceState.LAST_TIC),
-        #                Channel(ChannelState.EMPTY),
-        #                0,
-        #                Channel(ChannelState.EMPTY)): 0,
         '1000': 0,
-
-        # 2100
-        # SimulatorState(Source(SourceState.FIRST_TIC),
-        #                Channel(ChannelState.BUSY),
-        #                0,
-        #                Channel(ChannelState.EMPTY)): 0,
         '2100': 0,
-
-        # 1001
-        # SimulatorState(Source(SourceState.LAST_TIC),
-        #                Channel(ChannelState.EMPTY),
-        #                0,
-        #                Channel(ChannelState.BUSY)): 0,
         '1001': 0,
-
-        # 2101
-        # SimulatorState(Source(SourceState.FIRST_TIC),
-        #                Channel(ChannelState.BUSY),
-        #                0,
-        #                Channel(ChannelState.BUSY)): 0,
         '2101': 0,
-
-        # 1011
-        # SimulatorState(Source(SourceState.LAST_TIC),
-        #                Channel(ChannelState.EMPTY),
-        #                1,
-        #                Channel(ChannelState.BUSY)): 0,
         '1011': 0,
-
-        # 1101
-        # SimulatorState(Source(SourceState.LAST_TIC),
-        #                Channel(ChannelState.BUSY),
-        #                0,
-        #                Channel(ChannelState.BUSY)): 0,
         '1101': 0,
-
-        # 2111
-        # SimulatorState(Source(SourceState.FIRST_TIC),
-        #                Channel(ChannelState.BUSY),
-        #                1,
-        #                Channel(ChannelState.BUSY)): 0,
         '2111': 0,
-
-        # 0101
-        # SimulatorState(Source(SourceState.BLOCKED),
-        #                Channel(ChannelState.BUSY),
-        #                0,
-        #                Channel(ChannelState.BUSY)): 0,
         '0101': 0,
-
-        # 1X11
-        # SimulatorState(Source(SourceState.LAST_TIC),
-        #                Channel(ChannelState.BLOCKED),
-        #                1,
-        #                Channel(ChannelState.BLOCKED)): 0,
         '1X11': 0,
-
-        # 0X11
-        # SimulatorState(Source(SourceState.BLOCKED),
-        #                Channel(ChannelState.BLOCKED),
-        #                1,
-        #                Channel(ChannelState.BLOCKED)): 0,
         '0X11': 0,
-
-        # 2011
-        # SimulatorState(Source(SourceState.FIRST_TIC),
-        #                Channel(ChannelState.EMPTY),
-        #                1,
-        #                Channel(ChannelState.BUSY)): 0,
         '2011': 0,
-
-        # 1100
-        # SimulatorState(Source(SourceState.LAST_TIC),
-        #                Channel(ChannelState.BUSY),
-        #                0,
-        #                Channel(ChannelState.EMPTY)): 0,
         '1100': 0,
-
-        # 0100
-        # SimulatorState(Source(SourceState.BLOCKED),
-        #                Channel(ChannelState.BUSY),
-        #                1,
-        #                Channel(ChannelState.EMPTY)): 0,
         '0100': 0,
-
-        # 2001
-        # SimulatorState(Source(SourceState.FIRST_TIC),
-        #                Channel(ChannelState.EMPTY),
-        #                0,
-        #                Channel(ChannelState.BUSY)): 0,
-        '2001': 0,
         '1111': 0,
         '0111': 0,
-
+        '2001': 0,
 
     }
 
-    def __init__(self, A, K1, K2, Loch, Lk, P):
+    def __init__(self, A, K1, K2, Loch, Lc, Pbl):
         self.A = A
         self.K1 = K1
         self.K2 = K2
         self.Loch = Loch
-        self. Lk = Lk
-        self.P = P
+        self.Lc = Lc
+        self.Pbl = Pbl
+        self.Potkz = 0
 
     @property
     def A(self):
@@ -156,3 +67,39 @@ class SimulationStatistic:
     @Loch.setter
     def Loch(self, value):
         self._Loch = value
+
+    @property
+    def Pbl(self):
+        return self._Pbl
+
+    @property
+    def Lc(self):
+        return self._Lc
+
+    @Lc.setter
+    def Lc(self, value):
+        self._Lc = value
+
+    @Pbl.setter
+    def Pbl(self, value):
+        self._Pbl = value
+
+    @property
+    def Potkz(self):
+        return self._Potkz
+
+    @Potkz.setter
+    def Potkz(self, value=0):
+        self._Potkz = value
+
+    @property
+    def Woch(self):
+        return self.Loch / self.A
+
+    @property
+    def Wc(self):
+        return self.Lc / self.A
+
+    @property
+    def Q(self):
+        return 1 - self.Potkz
