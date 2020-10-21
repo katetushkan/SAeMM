@@ -1,5 +1,6 @@
-
+from Application import Application
 from ChanelState import Channel, ChannelState
+from ProcessdAppl import Process
 from SimulationStatistic import SimulationStatistic
 from SimulatorState import SimulatorState
 from SourceState import Source, SourceState
@@ -19,10 +20,12 @@ class SimulatorV21:
                                    0,
                                    Channel(ChannelState.EMPTY))
 
+        application = []
+        processed = Process()
         cls.update_statistics(simulator, statistic)
 
-        for _ in range(tact_count-1):
-            cls.change_simulator_state(generator_type, simulator, statistic, pi1, pi2)
+        for _ in range(tact_count):
+            cls.change_simulator_state(generator_type, simulator, statistic, pi1, pi2, application, _, processed)
             cls.update_statistics(simulator, statistic)
 
         statistic.A /= tact_count
@@ -30,7 +33,11 @@ class SimulatorV21:
         statistic.K1 /= tact_count
         statistic.K2 /= tact_count
         statistic.Pbl /= tact_count
+        for _ in application:
+            statistic.Wc += _.tic_quantity
+        statistic.Wc /= len(application)
         statistic.Lc /= tact_count
+        statistic.L1 /= tact_count
 
         return statistic
 
@@ -39,6 +46,10 @@ class SimulatorV21:
         if simulator.channel1.state == ChannelState.BUSY.value:
             statistics.K1 += 1
             statistics.Lc += 1
+            if simulator.channel2.state == ChannelState.BUSY.value:
+                statistics.L1 += 2
+            else:
+                statistics.L1 += 1
         if simulator.channel2.state != ChannelState.EMPTY.value:
             statistics.K2 += 1
             statistics.Lc += 1
@@ -47,14 +58,17 @@ class SimulatorV21:
             statistics.Lc += 1
         if simulator.source.state == SourceState.BLOCKED.value or simulator.channel1.state == ChannelState.BLOCKED.value:
             statistics.Pbl += 1
+        if simulator.channel1.state == ChannelState.BLOCKED.value:
+            statistics.Pblk += 1
 
         state = simulator.source.state + simulator.channel1.state + str(simulator.queue) + simulator.channel2.state
         statistics.SimulationStates[state] = statistics.SimulationStates[state] + 1
 
     @staticmethod
-    def change_simulator_state(generator, simulator, statistic, pi1, pi2):
+    def change_simulator_state(generator, simulator, statistic, pi1, pi2, application, index, processed):
         if simulator.channel2.state == ChannelState.BUSY.value and (generator.generator.next > pi2):
             simulator.channel2.state = ChannelState.EMPTY
+            processed.processed += 1
             statistic.A += 1
 
         if simulator.queue > 0 and simulator.channel2.state == ChannelState.EMPTY.value:
@@ -80,12 +94,17 @@ class SimulatorV21:
 
         if simulator.source.state == SourceState.LAST_TIC.value:
             if simulator.channel1.state == ChannelState.EMPTY.value:
+                application.append(Application(index, 0))
                 simulator.channel1.state = ChannelState.BUSY
                 simulator.source.state = SourceState.FIRST_TIC
             else:
                 simulator.source.state = SourceState.BLOCKED
         elif simulator.source.state == SourceState.FIRST_TIC.value:
             simulator.source.state = SourceState.LAST_TIC
+
         elif simulator.source.state == SourceState.BLOCKED.value:
             if simulator.channel1.state == ChannelState.EMPTY.value:
                 simulator.source.state = SourceState.FIRST_TIC
+
+        for _ in range(processed.processed, len(application)):
+            application[_].tic_quantity += 1

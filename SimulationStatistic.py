@@ -1,8 +1,3 @@
-from ChanelState import Channel, ChannelState
-from SimulatorState import SimulatorState
-from SourceState import Source, SourceState
-
-
 class SimulationStatistic:
 
     SimulationStates = {
@@ -33,8 +28,11 @@ class SimulationStatistic:
         self.K2 = K2
         self.Loch = Loch
         self.Lc = Lc
+        self.L1 = 0
         self.Pbl = Pbl
         self.Potkz = 0
+        self.Pblk = 0
+        self.Wc = 0
 
     @property
     def A(self):
@@ -98,8 +96,28 @@ class SimulationStatistic:
 
     @property
     def Wc(self):
-        return self.Lc / self.A
+        return self._Wc
 
     @property
     def Q(self):
         return 1 - self.Potkz
+
+    @property
+    def Pblk(self):
+        return self._Pblk
+
+    @Pblk.setter
+    def Pblk(self, value):
+        self._Pblk = value
+
+    @property
+    def L1(self):
+        return self._L1
+
+    @L1.setter
+    def L1(self, value):
+        self._L1 = value
+
+    @Wc.setter
+    def Wc(self, value):
+        self._Wc = value

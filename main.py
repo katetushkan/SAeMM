@@ -11,12 +11,14 @@ if __name__ == '__main__':
     print('Potkz={value}'.format(value=statistics.Potkz))
     print('Q={value}'.format(value=statistics.Q))
     print('Pbl={value}'.format(value=statistics.Pbl))
+    print('Pblk={value}'.format(value=statistics.Pblk))
     print('A={value}'.format(value=statistics.A))
     print('Loch={value}'.format(value=statistics.Loch))
     print('Lc={value}'.format(value=statistics.Lc))
     print('Woch={value}'.format(value=statistics.Woch))
     print('Wc={value}'.format(value=statistics.Wc))
     print('K1={value}'.format(value=statistics.K1))
+    print('L1={value}'.format(value=statistics.L1))
     print('K2={value}'.format(value=statistics.K2))
 
 
